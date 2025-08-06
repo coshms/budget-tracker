@@ -1,13 +1,27 @@
-starting_budget = int(input("Please enter your starting budget: "))
+while True:
+    starting_budget_input = input("Please enter your starting budget: ")
+    try:
+        starting_budget = int(starting_budget_input)
+        break
+    except ValueError:
+        print(f"{starting_budget_input} cannot be converted to an integer. Please enter an integer.")
+
+
 print("Now lets add income and expenses.\nPlease enter 'i' for income, 'e' for expense or 'done' to exit.")
 
 total = starting_budget
 counter = 0
 while True:
-    transaction_amount = input("Please enter the amount of the transaction: ")
+    transaction_amount_input = input("Please enter the amount of the transaction: ")
 
-    if transaction_amount == 'done':
+    if transaction_amount_input == 'done':
         break
+
+    try:
+        transaction_amount = int(transaction_amount_input)
+    except ValueError:
+        print(f"{transaction_amount_input} cannot be converted to an integer. Please enter an integer.")
+        continue
 
     income_or_expense = input("Is this income (i) or expense (e)? ")
 

@@ -1,38 +1,69 @@
-while True:
-    starting_budget_input = input("Please enter your starting budget: ")
-    try:
-        starting_budget = int(starting_budget_input)
-        break
-    except ValueError:
-        print(f"{starting_budget_input} cannot be converted to an integer. Please enter an integer.")
+from enum import Enum
 
 
-print("Now lets add income and expenses.\nPlease enter 'i' for income, 'e' for expense or 'done' to exit.")
 
-total = starting_budget
-counter = 0
-while True:
-    transaction_amount_input = input("Please enter the amount of the transaction: ")
+class TransactionType(Enum):
+    DEPOSIT = 'deposit'
+    WITHDRAWAL = 'withdrawal'
 
-    if transaction_amount_input == 'done':
-        break
+def get_starting_budget() -> float:
+    while True:
+        user_input = input("Please enter your starting budget: ")
+        try:
+            return float(user_input)
+        except ValueError:
+            print(f"{user_input} cannot be converted to a float. Please enter a float.")
 
-    try:
-        transaction_amount = int(transaction_amount_input)
-    except ValueError:
-        print(f"{transaction_amount_input} cannot be converted to an integer. Please enter an integer.")
-        continue
+def get_transaction_amount() -> float:
+    while True:
+        user_input = input("Please enter the amount of the transaction: ")
 
-    income_or_expense = input("Is this income (i) or expense (e)? ")
+        try:
+            return float(user_input)
+        except ValueError:
+            print(f"{user_input} cannot be converted to a float. Please enter a float.")
+            continue
 
-    if income_or_expense == 'i':
-        total += int(transaction_amount)
+
+def get_transaction_type() -> TransactionType:
+    while True:
+        user_input = input("Enter transaction type (deposit (d) or withdrawal (w)): ")
+        aliases = {
+            "d": TransactionType.DEPOSIT,
+            "deposit": TransactionType.DEPOSIT,
+            "w": TransactionType.WITHDRAWAL,
+            "withdrawal": TransactionType.WITHDRAWAL
+        }
+        key = user_input.strip().lower()
+        try:
+            return aliases[key]
+        except KeyError:
+            print(f"{user_input} is not a valid input. Please enter a valid transaction type.")
+            continue
+
+def process_transaction(total: float, transaction_type: TransactionType, amount: float) -> float:
+    
+    if transaction_type == TransactionType.DEPOSIT:
+        return total + amount
+    elif transaction_type == TransactionType.WITHDRAWAL:
+        return total - amount
+
+def run_budget_tracker():
+    starting_budget = get_starting_budget()
+    total = starting_budget
+    counter = 0
+
+    while True:
+        user_input = input("Enter any value to continue or 'done' to exit: ")
+        if user_input.strip().lower() == 'done':
+            break
+        
+        transaction_amount = get_transaction_amount()
+        transaction_type = get_transaction_type()
+        total = process_transaction(total=total, transaction_type=transaction_type, amount=transaction_amount)
         counter += 1
-    elif income_or_expense == 'e':
-        total -= int(transaction_amount)
-        counter += 1
-    else:
-        print("Invalid entry. Please use 'i' for income, 'e' for expense.")
-        continue
 
-print(f"Transactions entered: {counter}\nFinal balance: {total}")
+    print(f"Transactions Entered: {counter}\nFinal Balance: ${total:,.2f}")
+
+if __name__ == "__main__":
+    run_budget_tracker()
